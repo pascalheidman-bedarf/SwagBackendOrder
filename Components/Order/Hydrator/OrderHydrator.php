@@ -16,13 +16,18 @@ class OrderHydrator
      * @var PositionHydrator
      */
     private $positionHydrator;
+    /**
+     * @var \Shopware_Components_Auth
+     */
+    private $auth;
 
     /**
      * @param PositionHydrator $positionHydrator
      */
-    public function __construct(PositionHydrator $positionHydrator)
+    public function __construct(PositionHydrator $positionHydrator, \Shopware_Components_Auth $auth)
     {
         $this->positionHydrator = $positionHydrator;
+        $this->auth = $auth;
     }
 
     /**
@@ -62,7 +67,10 @@ class OrderHydrator
         $orderStruct->setShippingCostsNet((float) $data['shippingCostsNet']);
         $orderStruct->setShippingCosts((float) $data['shippingCosts']);
 
-        $orderStruct->setAttributes($data['orderAttribute'][0]);
+        $attributes = $data['orderAttribute'][0];
+        $attributes['swagBackendOrderCreator'] = $this->auth->getIdentity()->getId();
+
+        $orderStruct->setAttributes($attributes);
 
         foreach ($data['position'] as $position) {
             $positionStruct = $this->positionHydrator->hydrate($position);

@@ -30,6 +30,7 @@
 
         <service id="swag_backend_order.order.order_hydrator" class="SwagBackendOrder\Components\Order\Hydrator\OrderHydrator">
             <argument type="service" id="swag_backend_order.order.position_hydrator"/>
+            <argument type="service" id="Auth" />
         </service>
 
         <service id="swag_backend_order.order.position_hydrator" class="SwagBackendOrder\Components\Order\Hydrator\PositionHydrator"/>

@@ -12,6 +12,7 @@ use Shopware\Bundle\PluginInstallerBundle\Service\InstallerService;
 use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Models\Plugin\Plugin as PluginModel;
+use Shopware\Models\User\User;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SwagBackendOrder extends Plugin
@@ -55,5 +56,21 @@ class SwagBackendOrder extends Plugin
 
         //Finally set the plugin config value to the core config value.
         $pluginManager->saveConfigElement($plugin, 'sendMail', $sendMailConfigGlobal);
+
+        // add attribute field for order creator
+        /** @var \Shopware\Bundle\AttributeBundle\Service\CrudService $service */
+        $service = $this->container->get('shopware_attribute.crud_service');
+
+        $service->update(
+            's_core_customergroups_attributes',
+            'swagBackendOrderUser',
+            'single_selection',
+            [
+                'label' => 'Order creator',
+                'entity' => User::class,
+                'displayInBackend' => true,
+                'readOnly' => true
+            ]
+        );
     }
 }
